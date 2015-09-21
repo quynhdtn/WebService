@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<endpoints xmlns='http://java.sun.com/xml/ns/jax-ws/ri/runtime' version='2.0'>
+
+        <endpoint
+                name='StanfordWebServices'
+                implementation='liir.nlp.webservices.StanfordWebServices'
+                url-pattern='/services/StanfordWebServices'/>
+        <endpoint
+                name='StanfordInterfaceServices'
+                implementation='liir.nlp.webservices.StanfordInterfaceServices'
+                url-pattern='/services/StanfordInterfaceServices'/>
+</endpoints>
