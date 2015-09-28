@@ -1,15 +1,9 @@
 
 package liir.nlp.webservices;
 
-import com.sun.jersey.api.core.InjectParam;
 import com.sun.jersey.core.spi.factory.ResponseBuilderImpl;
-import com.sun.jersey.spi.inject.Inject;
-import liir.nlp.io.XMLReader;
-import liir.nlp.representation.Text;
-import liir.nlp.srl.sources.lth.interfaces.LundLemmatizer;
-import liir.nlp.srl.sources.lth.interfaces.LundParser;
-import liir.nlp.srl.sources.lth.interfaces.LundSRL;
-import liir.nlp.srl.sources.lth.interfaces.LundTagger;
+import liir.nlp.core.representation.io.XMLReader;
+import liir.nlp.core.representation.Text;
 import org.xml.sax.SAXException;
 
 import javax.ws.rs.GET;
@@ -17,10 +11,9 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
+import javax.xml.bind.annotation.XmlRootElement;
+
 /*
 @Path("/lnlp")
 public class LundBasedServices {
@@ -127,6 +120,8 @@ public class LundBasedServices {
 
 
 @Path("/lnlp")
+@XmlRootElement
+
 public class LundBasedServices {
 
 
@@ -144,7 +139,7 @@ public class LundBasedServices {
     @GET
     // The Java method will produce content identified by the MIME Media type "text/plain"
     @Path("/lemma")
-    @Produces({"application/xml", "application/json"})
+    @Produces("application/xml")
     public Response getLemma(@QueryParam("text") String xmltext){
 
         Text text= null;
@@ -201,6 +196,7 @@ public class LundBasedServices {
 
         try {
             Text   text = XMLReader.readCorpus(xmltext).get(0);
+            text.setAutomaticIndexing();
             li.lp.processToText(text);
             Response.ResponseBuilder rb = new ResponseBuilderImpl();
 
@@ -241,5 +237,35 @@ public class LundBasedServices {
         return null;
 
     }
+
+
+    @GET
+    // The Java method will produce content identified by the MIME Media type "text/plain"
+    @Path("/srlfullxml")
+    @Produces({"application/xml", "application/json"})
+    public Response getSRLFull(@QueryParam("text") String xmltext){
+
+        try {
+            Text   text = XMLReader.readCorpus(xmltext).get(0);
+            li.lt.processToText(text);
+            li.ll.processToText(text);
+            li.lp.processToText(text);
+            text = li.srl.processToText(text);
+            Response.ResponseBuilder rb = new ResponseBuilderImpl();
+
+            rb.entity(text.toXMLString());
+
+            return rb.build();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (SAXException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+
+    }
+
+
 
 }

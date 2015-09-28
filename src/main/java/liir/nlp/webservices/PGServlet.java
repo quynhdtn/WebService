@@ -3,12 +3,11 @@ package liir.nlp.webservices;
 import liir.nlp.pg.preprocessing.TextPreprocessing;
 import liir.nlp.pg.virtual.DomainReader;
 import liir.nlp.pg.virtual.Mapper;
-import liir.nlp.representation.Text;
+import liir.nlp.core.representation.Text;
 import org.xml.sax.SAXException;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;

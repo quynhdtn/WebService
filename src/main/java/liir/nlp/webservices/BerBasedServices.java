@@ -1,8 +1,8 @@
 package liir.nlp.webservices;
 
 import com.sun.jersey.core.spi.factory.ResponseBuilderImpl;
-import liir.nlp.io.XMLReader;
-import liir.nlp.representation.Text;
+import liir.nlp.core.representation.io.XMLReader;
+import liir.nlp.core.representation.Text;
 import org.xml.sax.SAXException;
 
 import javax.ws.rs.GET;
@@ -11,11 +11,13 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * Created by quynhdo on 21/09/15.
  */
 @Path("/bnlp")
+@XmlRootElement
 public class BerBasedServices {
 
 
@@ -35,12 +37,13 @@ public class BerBasedServices {
     @GET
     // The Java method will produce content identified by the MIME Media type "text/plain"
     @Path("/parse")
-    @Produces({"application/xml", "application/json"})
+    @Produces("application/xml")
     public Response getParse(@QueryParam("text") String xmltext){
 
         try {
             Text   text = XMLReader.readCorpus(xmltext).get(0);
             bi.pa.processToText(text);
+            text.setAutomaticIndexing();
             Response.ResponseBuilder rb = new ResponseBuilderImpl();
 
             rb.entity(text.toXMLString());
@@ -61,7 +64,7 @@ public class BerBasedServices {
     @GET
     // The Java method will produce content identified by the MIME Media type "text/plain"
     @Path("/sens")
-    @Produces({"application/xml", "application/json"})
+    @Produces("application/xml")
     public Response getSentences(@QueryParam("text") String text){
 
         Text txt = bi.bs.processToText(text);
@@ -78,12 +81,14 @@ public class BerBasedServices {
     @GET
     // The Java method will produce content identified by the MIME Media type "text/plain"
     @Path("/tokens")
-    @Produces({"application/xml", "application/json"})
+    @Produces("application/xml")
     public Response getTokens(@QueryParam("text") String xmltxt){
 
         try {
             Text text = XMLReader.readCorpus(xmltxt).get(0);
              bi.tk.processToText(text);
+
+
 
             text.setAutomaticIndexing();
             Response.ResponseBuilder rb = new ResponseBuilderImpl();
@@ -103,7 +108,7 @@ public class BerBasedServices {
     @GET
     // The Java method will produce content identified by the MIME Media type "text/plain"
     @Path("/coref")
-    @Produces({"application/xml", "application/json"})
+    @Produces("application/xml")
     public Response getCoref(@QueryParam("text") String xmltext){
 
         try {
@@ -130,7 +135,7 @@ public class BerBasedServices {
     @GET
     // The Java method will produce content identified by the MIME Media type "text/plain"
     @Path("/corefG")
-    @Produces({"application/xml", "application/json"})
+    @Produces("application/xml")
     public Response getCorefG(@QueryParam("text") String xmltext){
 
         try {
